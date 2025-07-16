@@ -5,13 +5,13 @@
 #include"vector2d.h"
 
 
-#define _XFORM_CREATE Transform2D::Create()
+#define _XFORM_CREATE std::shared_ptr<Transform>(std::make_shared<Transform>())
 
 
-class Transform2D :public std::enable_shared_from_this<Transform2D> {
-	using Xform = std::shared_ptr<Transform2D>;	//	自分のshared_ptr
-	using Parent = std::weak_ptr<Transform2D>;	//	親
-	using Children = std::vector<std::shared_ptr<Transform2D>>;	//	子供コレクション
+class Transform :public std::enable_shared_from_this<Transform> {
+	using Xform = std::shared_ptr<Transform>;	//	自分のshared_ptr
+	using Parent = std::weak_ptr<Transform>;	//	親
+	using Children = std::vector<std::shared_ptr<Transform>>;	//	子供コレクション
 
 	Vector2D<float> position_;	//	座標
 	float rotation_;			//	角度
@@ -20,17 +20,12 @@ class Transform2D :public std::enable_shared_from_this<Transform2D> {
 	Children children_;			//	子供
 
 public:	
-	Transform2D() 
+	Transform() 
 		:position_({ 0,0 }), rotation_(0.0f), scale_({ 0.0f,0.0f }){ }
 
 	//	デバック
 	static inline float ToDeg(float rad) { return rad * (180.0f / 3.1415926f); }
 	static inline float ToRad(float deg) { return deg * (3.1415926f / 180.0f); }
-
-	//	生成
-	static Xform Create() {
-		return std::shared_ptr<Transform2D>(std::make_shared<Transform2D>());
-	}
 
 	//	親の先祖に自分がいるかどうかの判定
 	bool IsInAncestorChain(const Xform& arg_new_parent) {
@@ -46,7 +41,7 @@ public:
 	}
 
 	//	親の設定と親側の自分を子供設定
-	void SetParent(const std::shared_ptr<Transform2D>& arg_new_parent);
+	void SetParent(const std::shared_ptr<Transform>& arg_new_parent);
 
 	//	親の削除
 	void ClearParent() { SetParent(nullptr); }

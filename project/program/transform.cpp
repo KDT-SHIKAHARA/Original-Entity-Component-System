@@ -17,7 +17,7 @@
 /// また循環参照にならないように自分の先祖に親にしたいオブジェクトが存在していないかを判断
 /// </summary>
 /// <param name="arg_new_parent"> 新しい親のポインタ </param>
-void Transform2D::SetParent(const std::shared_ptr<Transform2D>& arg_new_parent){
+void Transform::SetParent(const std::shared_ptr<Transform>& arg_new_parent){
 	//	新しい親が自分かどうかの判定＆新しい親が自分の先祖にいたら自分は先祖なので
 	//	先祖が親になるのはおかしいので防止用のメソッド
 	//	いたら親の設定をしない。循環参照防止
@@ -46,7 +46,7 @@ void Transform2D::SetParent(const std::shared_ptr<Transform2D>& arg_new_parent){
 /// 実際の座標取得
 /// </summary>
 /// <returns> 実際の座標 </returns>
-Vector2D<float> Transform2D::WorldPosition() const{
+Vector2D<float> Transform::WorldPosition() const{
 	//	親ポインタ取得
 	const auto& parent_ptr = parent();
 	//	存在していなかったら座標を返す
@@ -60,7 +60,7 @@ Vector2D<float> Transform2D::WorldPosition() const{
 /// 角度の取得
 /// </summary>
 /// <returns></returns>
-float Transform2D::WorldRotation() const{
+float Transform::WorldRotation() const{
 	//	親ポインタ取得
 	const auto& parent_ptr = parent_.lock();
 	//	存在していたら親からrota分足した角度 : 自分の角度
@@ -71,7 +71,7 @@ float Transform2D::WorldRotation() const{
 /// サイズの倍率
 /// </summary>
 /// <returns> 親がいれば親の角度 </returns>
-Vector2D<float> Transform2D::WorldScale() const{
+Vector2D<float> Transform::WorldScale() const{
 	//	親ポインタ取得
 	const auto& parent_ptr = parent_.lock();
 	//	存在していなければスケールをそのまま返す
@@ -85,7 +85,7 @@ Vector2D<float> Transform2D::WorldScale() const{
 /// 親がいれば親の移動ベクトルを基準にして、移動させる
 /// </summary>
 /// <param name="worldPosition"></param>
-void Transform2D::SetWorldPosition(const Vector2D<float>& worldPosition){
+void Transform::SetWorldPosition(const Vector2D<float>& worldPosition){
 	//	親ポインタ取得
 	const auto& parent_ptr = parent_.lock();
 	//	存在していなければ座標をそのままセット
@@ -112,7 +112,7 @@ void Transform2D::SetWorldPosition(const Vector2D<float>& worldPosition){
 /// 親がいれば親の角度から自分の角度分減らす(親回転打消し)
 /// </summary>
 /// <param name="rad"></param>
-void Transform2D::SetWorldRotasion(float rad){
+void Transform::SetWorldRotasion(float rad){
 	//	親ポインタ取得
 	const auto& parent_ptr = parent_.lock();
 
@@ -126,7 +126,7 @@ void Transform2D::SetWorldRotasion(float rad){
 /// 親がいれば親のスケール / 自分のスケールでサイズ
 /// </summary>
 /// <param name="arg_scale"> 設定したい自分のスケール </param>
-void Transform2D::SetWorldScale(const Vector2D<float>& arg_scale){
+void Transform::SetWorldScale(const Vector2D<float>& arg_scale){
 	//	親ポインタ取得
 	const auto& parent_ptr = parent_.lock();
 
@@ -139,7 +139,7 @@ void Transform2D::SetWorldScale(const Vector2D<float>& arg_scale){
 /// 向いている方向に移動ベクトルを作成　
 /// </summary>
 /// <returns> 方向ベクトル </returns>
-Vector2D<float> Transform2D::Forward() const{
+Vector2D<float> Transform::Forward() const{
 	return { std::cosf(WorldRotation()),std::sinf(WorldRotation()) };
 }
 
@@ -147,7 +147,7 @@ Vector2D<float> Transform2D::Forward() const{
 /// 渡された座標に対しての角度を計算する
 /// </summary>
 /// <param name="arg_target"> 対象の座標 </param>
-void Transform2D::LookAt(const Vector2D<float>& arg_target){
+void Transform::LookAt(const Vector2D<float>& arg_target){
 	//	移動ベクトル
 	Vector2D dir = arg_target - WorldPosition();
 	//	角度
@@ -162,7 +162,7 @@ void Transform2D::LookAt(const Vector2D<float>& arg_target){
 /// </summary>
 /// <param name="target"> 指定座標 </param>
 /// <param name="arg_speed"> 移動速度 </param>
-void Transform2D::MoveToTarget(const Vector2D<float>& target, float arg_speed){
+void Transform::MoveToTarget(const Vector2D<float>& target, float arg_speed){
 	//	移動ベクトル作成
 	Vector2D<float> dir = target - WorldPosition();
 	//	距離取得
@@ -187,7 +187,7 @@ void Transform2D::MoveToTarget(const Vector2D<float>& target, float arg_speed){
 /// ずっと追跡させるならターゲットセットのメソッドを常に呼び出す
 /// </summary>
 /// <param name="arg_speed"> 移動速度 </param>
-void Transform2D::MoveToForward(float arg_speed){
+void Transform::MoveToForward(float arg_speed){
 	//	向きから方向ベクトルを作成
 	Vector2D<float> rot_vector = Forward();
 
@@ -199,7 +199,7 @@ void Transform2D::MoveToForward(float arg_speed){
 /// デバックログに座標と角度とスケールを表示する
 /// </summary>
 /// <param name="label"></param>
-void Transform2D::AddDebugLog(const std::string& label) const{
+void Transform::AddDebugLog(const std::string& label) const{
 	DebugLog::AddDubug(label + " position.x:", position_.x);
 	DebugLog::AddDubug(label + " position.y:", position_.y);
 	DebugLog::AddDubug(label + " rotation:", rotation_);
